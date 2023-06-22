@@ -24,10 +24,13 @@ def select_sampler(train_data, val_data, test_data, user_count, item_count, args
         return PopularNegativeSampler(train_data, val_data, test_data, user_count, item_count, args.negsample_size, args.seed, args.negsample_savefolder)
 
 def mtl_data(path=None, args=None):
+    print('mtl_data started')
     if not path:
         return
+    print('read_csv started')
     df = pd.read_csv(path, usecols=["user_id", "item_id", "click", "like", "video_category", "gender", "age", "hist_1", "hist_2",
                        "hist_3", "hist_4", "hist_5", "hist_6", "hist_7", "hist_8", "hist_9", "hist_10"])
+    print('read_csv done')
     # df = df[:100000]
     df['video_category'] = df['video_category'].astype(str)
     df = sample_data(df)
@@ -65,6 +68,7 @@ def mtl_data(path=None, args=None):
     tmp_df = df[train_len:]
     val_df = tmp_df[:int(len(tmp_df)/2)]
     test_df = tmp_df[int(len(tmp_df)/2):]
+    print('mtl_data done')
     return train_df, val_df, test_df, user_feature_dict, item_feature_dict
 
 def set_fenbu(row_data):

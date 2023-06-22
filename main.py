@@ -56,6 +56,7 @@ def select_sampler(train_data, val_data, test_data, user_count, item_count, args
         return PopularNegativeSampler(train_data, val_data, test_data, user_count, item_count, args.negsample_size, args.seed, args.negsample_savefolder)
 
 def get_data(args):
+    print('get data started')
     name = args.task_name
     path = args.dataset_path
     rng = random.Random(args.seed)
@@ -508,8 +509,9 @@ if __name__ == "__main__":
             # print('inference_time:', model.all_time)
         writer.close()
     elif args.task_name == 'mtl':
-
+        print('=============multi task learning=============')
         train_dataloader, val_dataloader, test_dataloader, user_feature_dict, item_feature_dict = get_data(args)
+        print('get data done')
         if args.mtl_task_num == 2:
             num_task = 2
         else:
@@ -518,7 +520,9 @@ if __name__ == "__main__":
             model = ESMM(user_feature_dict, item_feature_dict, emb_dim=args.embedding_size, num_task=num_task)
         else:
             model = MMOE(user_feature_dict, item_feature_dict, emb_dim=args.embedding_size, device=args.device, num_task=num_task)
+        print('model setting done')
         mtlTrain(model, train_dataloader, val_dataloader, test_dataloader, args, train=False)
+        print('mtlTrain done')
     elif args.task_name == 'transfer_learning':
         print('=============transfer_learning=============')
         train_loader, val_loader, test_loader = get_data(args) #, user_noclick
