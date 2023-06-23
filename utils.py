@@ -28,9 +28,20 @@ def mtl_data(path=None, args=None):
     if not path:
         return
     print('read_csv started')
-    df = pd.read_csv(path, usecols=["user_id", "item_id", "click", "like", "video_category", "gender", "age", "hist_1", "hist_2",
+    chunks = pd.read_csv(path, chunksize=1000000, engine='python' ,usecols=["user_id", "item_id", "click", "like", "video_category", "gender", "age", "hist_1", "hist_2",
                        "hist_3", "hist_4", "hist_5", "hist_6", "hist_7", "hist_8", "hist_9", "hist_10"])
-    print('read_csv done')
+    print('chunk done')
+    list = [] 
+    # show iterate progress
+    for chunk in tqdm(chunks):
+    # for chunk in chunks:   
+        list = list + chunk.values.tolist()  
+    print('concat list done')
+    df = pd.DataFrame(list, columns=["user_id", "item_id", "click", "like", "video_category", "gender", "age", "hist_1", "hist_2",
+                       "hist_3", "hist_4", "hist_5", "hist_6", "hist_7", "hist_8", "hist_9", "hist_10"])
+    # df = pd.read_csv(path, usecols=["user_id", "item_id", "click", "like", "video_category", "gender", "age", "hist_1", "hist_2",
+    #                    "hist_3", "hist_4", "hist_5", "hist_6", "hist_7", "hist_8", "hist_9", "hist_10"])
+    print('transform to df done')
     # df = df[:100000]
     df['video_category'] = df['video_category'].astype(str)
     df = sample_data(df)
